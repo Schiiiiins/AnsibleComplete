@@ -1,0 +1,40 @@
+---
+  name: fail2ban for Debian-based linux-distributions
+
+  - name: updating system
+    apt:
+      name: "*"
+      state: latest
+
+  - name: install fail2ban
+    apt:
+      name: fail2ban
+      state: present
+
+  - name: copy ssh-config
+    copy:
+      src: "{{ role_path }}"/files/sshd.local
+      dest: /etc/fail2ban/jail.d
+
+  - name: add ufw rules
+    ufw:
+      rule: allow
+      name: OpenSSH
+
+  - name: enable fail2ban/ufw
+    systemd:
+      enabled: yes
+      name: "{{ services }}"
+      vars:
+        services:
+          - fail2ban
+          - ufw
+
+  - name: restart both services
+    systemd:
+      restarted: yes
+      name: "{{ services }}"
+      vars:
+        services:
+          - fail2ban
+          - ufw

@@ -1,0 +1,6 @@
+[sshd]
+enabled = true
+port = ssh
+findtime = 86400
+bantime = 604800
+maxretry = 2

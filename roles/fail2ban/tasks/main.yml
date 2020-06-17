@@ -1,0 +1,10 @@
+---
+  name: Install fail2ban
+
+  - name: Debian-Installation
+    import_tasks: debian.yaml
+    when: ansible_facts['os_family']|lower == "debian"
+
+  - name: RedHat-Installation
+    import_tasks: redhat.yaml
+    when: ansible_facts['os_family']|lower == "redhat"

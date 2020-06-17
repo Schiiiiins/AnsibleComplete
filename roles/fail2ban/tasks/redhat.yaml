@@ -1,0 +1,44 @@
+---
+  name: fail2ban for RedHat-based linux-distributions
+
+  - name: updating system
+    yum:
+      name: '*'
+      state: latest
+
+  - name: install epel-release
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - epel-release
+
+  - name: install fail2ban
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - fail2ban
+
+  - name: copy ssh-config
+    copy:
+      src: "{{ role_path }}"/files/sshd.local
+      dest: /etc/fail2ban/jail.d
+
+  - name: enable fail2ban/firewalld
+    systemd:
+      enabled: yes
+      name: "{{ services }}"
+      vars:
+        services:
+          - fail2ban
+          - firewalld
+
+  - name: restart both services
+    systemd:
+      restarted: yes
+      name: "{{ services }}"
+      vars:
+        services:
+          - fail2ban
+          - firewalld
